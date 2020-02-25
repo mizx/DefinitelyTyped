@@ -1,39 +1,53 @@
 // Type definitions for snapshot-diff 0.7
-// Project: https://github.com/baz/foo (Does not have to be to GitHub, but prefer linking to a source code repository rather than to a project website.)
+// Project: https://github.com/jest-community/snapshot-diff
 // Definitions by: Cody Mathisen <https://github.com/mizx>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
-/*~ If this module is a UMD module that exposes a global variable 'myLib' when
- *~ loaded outside a module loader environment, declare that global here.
- *~ Otherwise, delete this declaration.
- */
-export as namespace myLib;
+/// <reference types="jest" />
 
-/*~ If this module has methods, declare them as functions like so.
- */
-export function myMethod(a: string): string;
-export function myOtherMethod(a: number): number;
-
-/*~ You can declare types that are available via importing the module */
-export interface someType {
-    name: string;
-    length: number;
-    extras?: string[];
+interface Options {
+    /**
+     * Expand the diff, so the whole information is preserved.
+     *
+     * @default false
+     */
+    expand?: boolean;
+    /**
+     * Preserve color information from Jest diff.
+     *
+     * @default false
+     */
+    colors?: boolean;
+    /**
+     * Number of context lines to be shown at the beginning and at the end of a snapshot.
+     *
+     * @default 5
+     */
+    contextLines?: number;
+    /**
+     * Prevent line number patch marks from appearing in diffs.
+     * This can be helpful when diffs are breaking only because of the patch marks.
+     * Changes `@@ -1,1 +1,2 @@` to `@@ --- --- @@`.
+     *
+     * @default false
+     */
+    stablePatchmarks?: boolean;
+    /**
+     * The annotation indicating from which serialization the `-` lines are.
+     *
+     * @default "First Value"
+     */
+    aAnnotation?: string;
+    /**
+     * The annotation indicating from which serialization the `+` lines are.
+     *
+     * @default "Second Value"
+     */
+    bAnnotation?: string;
 }
 
-/*~ You can declare properties of the module using const, let, or var */
-export const myField: number;
-
-/*~ If there are types, properties, or methods inside dotted names
- *~ of the module, declare them inside a 'namespace'.
- */
-export namespace subProp {
-    /*~ For example, given this definition, someone could write:
-     *~   import { subProp } from 'yourModule';
-     *~   subProp.foo();
-     *~ or
-     *~   import * as yourMod from 'yourModule';
-     *~   yourMod.subProp.foo();
-     */
-    function foo(): void;
+declare namespace jest {
+    interface Matchers<R> {
+        toMatchDiffSnapshot(value: unknown, options?: Options, testName?: string): R;
+    }
 }
